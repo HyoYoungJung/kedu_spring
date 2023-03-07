@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.keduit.mapper.TodoMapper">
+
+<!-- GetList(목록) -->
+	<select id="getList" resultType="com.keduit.domain.TodoVO">
+		select * from todoList order by todoDate ASC
+	</select>
+
+<!-- Create(Insert) -->
+<!-- insert문 실행 및 PK값 알 필요 없을 때 -->
+	<insert id="insert"> 
+		insert into todoList(no, todoDate, content) 
+		values (seq_todo.nextval, #{todoDate}, #{content})
+	</insert>
+<!-- insert문 실행 및 생성된 PK값 알아야할 때  -->	
+	<insert id="insertSelectKey"> 
+		<!-- order는 해당 쿼리의 순서를 의미. BEFORE면 insert쿼리문 수행전에 selectKey가 실행됨. --> 
+		<selectKey keyProperty="no" order="BEFORE" resultType="Long"> 
+			select seq_todo.nextval from dual
+		</selectKey>
+		insert into todoList(no, todoDate, content) 
+		values (#{no}, #{todoDate}, #{content})
+	</insert>
+	
+<!-- Read(상세조회) -->
+	<select id="read" resultType="com.keduit.domain.TodoVO">
+		select * from todoList where no = #{no}
+	</select>
+
+<!-- Delete(삭제) -->
+	<delete id="delete">
+		delete from todoList where no = #{no}
+	</delete>
+
+<!-- Update(수정) -->
+	<update id="update">
+		update todoList set
+		todoDate = #{todoDate}, 
+		content = #{content},
+		updateDate=sysdate
+		where no = #{no}
+	</update>
+
+
+</mapper>
